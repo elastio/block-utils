@@ -1211,16 +1211,16 @@ pub fn get_block_dev_property(
     device_path: impl AsRef<Path>,
     tag: &str,
 ) -> BlockResult<Option<String>> {
-    let error_message = format!(
-        "Unable to get file_name on device {:?}",
-        device_path.as_ref()
-    );
-
     let syspath = device_path
         .as_ref()
         .file_name()
         .map(PathBuf::from)
-        .ok_or_else(|| BlockUtilsError::new(error_message))?;
+        .ok_or_else(|| {
+            BlockUtilsError::new(format!(
+                "Unable to get file_name on device {:?}",
+                device_path.as_ref()
+            ))
+        })?;
 
     Ok(udev::Device::from_syspath(&syspath)?
         .property_value(tag)
@@ -1232,16 +1232,16 @@ pub fn get_block_dev_property(
 pub fn get_block_dev_properties(
     device_path: impl AsRef<Path>,
 ) -> BlockResult<HashMap<String, String>> {
-    let error_message = format!(
-        "Unable to get file_name on device {:?}",
-        device_path.as_ref()
-    );
-
     let syspath = device_path
         .as_ref()
         .file_name()
         .map(PathBuf::from)
-        .ok_or_else(|| BlockUtilsError::new(error_message))?;
+        .ok_or_else(|| {
+            BlockUtilsError::new(format!(
+                "Unable to get file_name on device {:?}",
+                device_path.as_ref()
+            ))
+        })?;
 
     let udev_device = udev::Device::from_syspath(&syspath)?;
     Ok(udev_device
